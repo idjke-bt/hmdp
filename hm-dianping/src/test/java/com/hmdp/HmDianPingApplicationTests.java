@@ -26,4 +26,10 @@ class HmDianPingApplicationTests {
         shopService.saveShopToRedis(1L, 10L);
     }
 
+    @Test
+    void saveHotShopByCacheClient(){
+        Shop shop = shopService.getById(1L);
+        cacheClient.setWithLogicalExpire(CACHE_SHOP_KEY+1L,shop,10L, TimeUnit.SECONDS);
+    }
+
 }
