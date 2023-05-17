@@ -17,14 +17,8 @@ class HmDianPingApplicationTests {
 
     @Resource
     private ShopServiceImpl shopService;
-
     @Resource
     private CacheClient cacheClient;
-
-    @Test
-    void saveHotShop(){
-        shopService.saveShopToRedis(1L, 10L);
-    }
 
     @Test
     void saveHotShopByCacheClient(){
