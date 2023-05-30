@@ -11,13 +11,11 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
+* @Description: 对应tb_voucher_order表
+* @Author: yf-idjke
+* @Date: 2023/5/20
+*/
+
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)

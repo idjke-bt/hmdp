@@ -1,4 +1,4 @@
-package com.hmdp.utils;
+package com.hmdp.utils.redis;
 
 import lombok.Data;
 

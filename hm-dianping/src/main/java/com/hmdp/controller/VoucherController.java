@@ -9,13 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- * <p>
- *  前端控制器
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
+* @Description: 添加普通券和秒杀券
+* @Author: yf-idjke
+* @Date: 2023/5/17
+*/
+
 @RestController
 @RequestMapping("/voucher")
 public class VoucherController {

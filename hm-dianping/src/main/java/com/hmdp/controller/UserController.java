@@ -16,13 +16,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 /**
- * <p>
- * 前端控制器
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
+* @Description: 处理发送验证码，用户登录
+* @Author: yf-idjke
+* @Date: 2023/5/18
+*/
+
 @Slf4j
 @RestController
 @RequestMapping("/user")
