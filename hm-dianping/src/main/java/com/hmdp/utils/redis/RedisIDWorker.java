@@ -31,7 +31,7 @@ public class RedisIDWorker {
      * @param keyPrefix 前缀
      * @return 生成一个商品唯一Id
      */
-    public Long nextId(String keyPrefix){
+    public long nextId(String keyPrefix){
         //1.生成时间戳
         LocalDateTime now = LocalDateTime.now();
         long nowEpochSecond = now.toEpochSecond(ZoneOffset.UTC);
