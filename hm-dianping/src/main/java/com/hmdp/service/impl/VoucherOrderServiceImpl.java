@@ -11,6 +11,8 @@ import com.hmdp.utils.UserHolder;
 import com.hmdp.utils.redis.RedisConstants;
 import com.hmdp.utils.redis.RedisIDWorker;
 import com.hmdp.utils.redis.SimpleRedisLock;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 处理秒杀券订单表
@@ -26,7 +29,7 @@ import java.time.LocalDateTime;
  * @since 2021-12-22
  */
 @Service
-@Transactional
+//@Transactional
 public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, VoucherOrder> implements IVoucherOrderService {
 
     @Resource
@@ -36,6 +39,9 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 
     @Resource
     private RedisIDWorker redisIDWorker;
+
+    @Resource
+    private RedissonClient redissonClient;
 
     /**
      *实现秒杀下单
@@ -60,11 +66,15 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 
         //5.实现分布式锁
         //创建锁对象:要保证一人一单，采用业务名称+userId作为key值的name
-        SimpleRedisLock simpleRedisLock = new SimpleRedisLock(stringRedisTemplate, "order" + userId);
-        boolean isLock = simpleRedisLock.tryLock(1200L);
-        if(!isLock){
-            //获取锁失败：返回错误或重试
-            return Result.fail("不允许重复下单！");
+        RLock lock = redissonClient.getLock("lock:order" + userId);
+        boolean flag = false;
+        try {
+            flag = lock.tryLock(1,10000, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        if(!flag){
+            return Result.fail("不允许重复下单");
         }
 
         //获取锁成功
@@ -73,7 +83,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
             return proxy.createVoucherOrder(voucherId);
         } finally {
             //释放锁
-            simpleRedisLock.unlock();
+            lock.unlock();
         }
     }
 
